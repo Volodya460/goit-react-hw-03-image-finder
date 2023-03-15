@@ -1,5 +1,12 @@
 import React from 'react';
-// import { toast } from 'react-toastify';
+import {
+  SearchForm,
+  SearchFormButton,
+  SearchFormButtonSpan,
+  SearchFormInput,
+  SearchHeader,
+} from './Searchbar.styled';
+
 export class SearchBar extends React.Component {
   state = {
     inputValue: '',
@@ -10,6 +17,7 @@ export class SearchBar extends React.Component {
   };
 
   handleSubmit = event => {
+    this.props.resetValue();
     event.preventDefault();
     if (this.state.inputValue.trim() === '') {
       alert('Write something ');
@@ -20,13 +28,13 @@ export class SearchBar extends React.Component {
 
   render() {
     return (
-      <header>
-        <form onSubmit={this.handleSubmit}>
-          <button type="submit">
-            <span>Search</span>
-          </button>
+      <SearchHeader>
+        <SearchForm onSubmit={this.handleSubmit}>
+          <SearchFormButton type="submit">
+            <SearchFormButtonSpan>Search</SearchFormButtonSpan>
+          </SearchFormButton>
 
-          <input
+          <SearchFormInput
             type="text"
             autoComplete="off"
             autoFocus
@@ -34,8 +42,8 @@ export class SearchBar extends React.Component {
             value={this.state.inputValue}
             onChange={this.handleValueChange}
           />
-        </form>
-      </header>
+        </SearchForm>
+      </SearchHeader>
     );
   }
 }

@@ -1,52 +1,97 @@
 import React from 'react';
 import Button from './Button/Button';
 import ImageGallery from './ImageGallery/ImageGallery';
-import axios from 'axios';
 
-// import { ToastContainer } from 'react-toastify';
 import { SearchBar } from './Searchbar/Searchbar';
+import fetchImages from './services/api';
+import Loader from './Loader/Loader';
+import Modal from './Modal/Modal';
 
 export class App extends React.Component {
   state = {
     inputValue: '',
+    page: 1,
+    images: [],
+    loading: false,
+    currentPreview: '',
   };
-  page = 1;
+
+  quantityImg = 0;
+
   handleFormSubmit = inputValue => {
     this.setState({ inputValue });
   };
 
-  loadMore = () => {
-    this.page += 1;
-    console.log(this.page);
-    const BASE_URL = 'https://pixabay.com/api/';
+  getInputValue = value => {
+    this.setState({ inputValue: value, images: [], page: 1 });
+  };
 
-    const searchParams = new URLSearchParams({
-      key: `33272220-12aa76911a3763f30e85ef70a`,
-      image_type: 'photo',
-      orientation: 'horizontal',
-      safesearch: true,
-      per_page: 12,
-    });
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.inputValue !== this.state.inputValue) {
+      this.setState({ page: 1, images: [], loading: false });
+      this.getImages(this.state.inputValue);
+    }
 
-    return axios
-      .get(
-        `${BASE_URL}?${searchParams}&q=${this.state.inputValue}&page=${this.page}`
-      )
-      .then(response => {
-        this.setState({
-          dataFetch: response.data.hits,
+    if (
+      prevState.page !== this.state.page &&
+      prevState.inputValue === this.state.inputValue
+    ) {
+      this.getImages(this.state.inputValue);
+    }
+  }
+
+  getImages = key => {
+    this.setState({ loading: 'true' });
+    fetchImages(key, this.state.page)
+      .then(({ data: { hits, totalHits } }) => {
+        if (totalHits === 0) {
+          alert(`We dont find ${this.state.inputValue}`);
+        }
+        this.setState(prevState => {
+          return {
+            images: [...prevState.images, ...hits],
+          };
         });
-        console.log(response.data.hits);
+      })
+      .catch(error => console.log(error))
+      .finally(() => {
+        return this.setState({ loading: false });
       });
   };
 
+  loadMore = () => {
+    this.setState(prevState => {
+      return {
+        page: prevState.page + 1,
+      };
+    });
+  };
+
+  openModal = url => {
+    this.setState({ currentPreview: url });
+  };
+
+  closeModal = () => {
+    this.setState({ currentPreview: '' });
+  };
+
   render() {
+    const { loading, images, currentPreview } = this.state;
     return (
       <div>
-        <SearchBar onSubmit={this.handleFormSubmit} />
-        {/* <ToastContainer /> */}
-        <ImageGallery inputValue={this.state.inputValue} />
-        <Button onClick={this.loadMore} />
+        <SearchBar
+          onSubmit={this.handleFormSubmit}
+          resetValue={this.getInputValue}
+        />
+
+        {loading && <Loader />}
+
+        <ImageGallery images={this.state.images} openModal={this.openModal} />
+        {images.length > 0 && <Button onClick={this.loadMore} />}
+
+        {currentPreview && (
+          <Modal closeModal={this.closeModal} showModal={currentPreview} />
+        )}
       </div>
     );
   }

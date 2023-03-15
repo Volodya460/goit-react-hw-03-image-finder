@@ -9,9 +9,9 @@ export default function Loader() {
         radius="48"
         color="#4fa94d"
         ariaLabel="watch-loading"
+        wrapperStyle={{ justifyContent: 'center', margin: '70px 0' }}
         visible={true}
       />
-      Loading...
     </div>
   );
 }

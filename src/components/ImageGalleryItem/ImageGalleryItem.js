@@ -1,8 +1,15 @@
-export default function ImageGalleryItem({ arrr }) {
+import { List, PreviewImg } from './ImageGallaryItem.styled';
+
+export default function ImageGalleryItem({ arrr, openModal }) {
   const { id, webformatURL, tags } = arrr;
   return (
-    <li key={id}>
-      <img src={webformatURL} alt={tags} />
-    </li>
+    <List
+      key={id}
+      onClick={() => {
+        openModal(arrr.largeImageURL);
+      }}
+    >
+      <PreviewImg src={webformatURL} alt={tags} />
+    </List>
   );
 }
