@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 import { ModalWindow, Overlay } from './Modal.styled';
 
@@ -38,3 +39,7 @@ export default class Modal extends PureComponent {
     );
   }
 }
+
+Modal.propTypes = {
+  showModal: PropTypes.string.isRequired,
+};

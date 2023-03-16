@@ -1,4 +1,5 @@
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 export default function fetchImages(inputValue, page) {
   const BASE_URL = 'https://pixabay.com/api/';
@@ -14,3 +15,8 @@ export default function fetchImages(inputValue, page) {
 
   return axios.get(`${BASE_URL}?${searchParams}&q=${inputValue}`);
 }
+
+fetchImages.propTypes = {
+  inputValue: PropTypes.string.isRequired,
+  page: PropTypes.number.isRequired,
+};

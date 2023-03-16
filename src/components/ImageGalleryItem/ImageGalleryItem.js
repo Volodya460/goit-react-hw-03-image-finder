@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { List, PreviewImg } from './ImageGallaryItem.styled';
 
 export default function ImageGalleryItem({ arrr, openModal }) {
@@ -13,3 +14,8 @@ export default function ImageGalleryItem({ arrr, openModal }) {
     </List>
   );
 }
+
+ImageGalleryItem.propTypes = {
+  arrr: PropTypes.object.isRequired,
+  openModal: PropTypes.func.isRequired,
+};
