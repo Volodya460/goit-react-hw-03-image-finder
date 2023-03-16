@@ -14,6 +14,7 @@ export class App extends React.Component {
     images: [],
     loading: false,
     currentPreview: '',
+    totalHits: 0,
   };
 
   quantityImg = 0;
@@ -23,7 +24,7 @@ export class App extends React.Component {
   };
 
   getInputValue = value => {
-    this.setState({ inputValue: value, images: [], page: 1 });
+    this.setState({ inputValue: value, images: [], page: 1, totalHits: 0 });
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -49,6 +50,7 @@ export class App extends React.Component {
         }
         this.setState(prevState => {
           return {
+            totalHits,
             images: [...prevState.images, ...hits],
           };
         });
@@ -76,7 +78,7 @@ export class App extends React.Component {
   };
 
   render() {
-    const { loading, images, currentPreview } = this.state;
+    const { loading, images, currentPreview, totalHits } = this.state;
     return (
       <div>
         <SearchBar
@@ -86,8 +88,8 @@ export class App extends React.Component {
 
         {loading && <Loader />}
 
-        <ImageGallery images={this.state.images} openModal={this.openModal} />
-        {images.length > 0 && <Button onClick={this.loadMore} />}
+        <ImageGallery images={images} openModal={this.openModal} />
+        {images.length < totalHits && <Button onClick={this.loadMore} />}
 
         {currentPreview && (
           <Modal closeModal={this.closeModal} showModal={currentPreview} />
